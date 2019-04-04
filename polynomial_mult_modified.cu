@@ -78,7 +78,7 @@ int main() {
     cudaMemcpy(Yd, Y, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
-	calculate_products<<<t, (n*n)/t>>>(Pd, Xd, Yd, t, n);
+	calculate_products<<<(n*n)/t, t>>>(Pd, Xd, Yd, t, n);
     
     // Sums to final polynomial
 
@@ -88,7 +88,7 @@ int main() {
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
     // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
-    reduce_polynomial<<<2*n-2, 1>>>(Pd, Polyd, n);
+    reduce_polynomial<<<2*n-1, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
 	    // Print input, output
