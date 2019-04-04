@@ -5,29 +5,10 @@ using namespace std;
 
 const int MAX_COEFF = 103;
 
-struct cuda_exception {
-    explicit cuda_exception(const char *err) : error_info(err) {}
-    explicit cuda_exception(const string &err) : error_info(err) {}
-    string what() const throw() { return error_info; }
-
-    private:
-    string error_info;
-};
-
 void random_polynomial(int* p,  int n)
 {
     for (int i=0; i<n; i++) {
         p[i] = rand() % MAX_COEFF;
-    }
-}
-
-void checkCudaError(const char *msg) {
-    cudaError_t err = cudaGetLastError();
-    if (cudaSuccess != err) {
-        string error_info(msg);
-        error_info += " : ";
-        error_info += cudaGetErrorString(err);
-        throw cuda_exception(error_info);
     }
 }
 
@@ -59,7 +40,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
-    const int n = 2048;    
+    const int n = 8;    
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
@@ -81,19 +62,14 @@ int main() {
 	
 	int *Xd, *Yd, *Pd;
     cudaMalloc((void **)&Xd, sizeof(int)*n);
-    checkCudaError("allocate GPU memory for the first matrix");
     cudaMalloc((void **)&Yd, sizeof(int)*n);
-    checkCudaError("allocate GPU memory for the second matrix");
     cudaMalloc((void **)&Pd, sizeof(int)*n*n);
-    checkCudaError("allocate GPU memory for the third matrix");
 
 	cudaMemcpy(Xd, X, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Yd, Y, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
     calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
-    cudaThreadSynchronize();
-    checkCudaError("call the multiplication kernel");
     cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
 
     // Sums to final polynomial
