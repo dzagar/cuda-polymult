@@ -42,7 +42,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
-    const int n = 128;    
+    const int n = 64;    
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
@@ -83,7 +83,7 @@ int main() {
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
     // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
-    reduce_polynomial<<<1, 2*n-2>>>(Pd, Polyd, n);
+    reduce_polynomial<<<2*n-2, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
