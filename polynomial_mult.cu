@@ -10,7 +10,6 @@ void random_polynomial(int* p,  int n)
     srand(40);
     for (int i=0; i<n; i++) {
         p[i] = rand() % MAX_COEFF;
-        printf("%d ", p[i]);
     }
 }
 
@@ -18,6 +17,7 @@ __global__ void calculate_products(int *prods, int *x, int *y, size_t n)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     prods[index] = x[blockIdx.x] * y[threadIdx.x];
+    printf("%d ", prods[index]);
 }
 
 
