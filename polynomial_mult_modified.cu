@@ -49,6 +49,7 @@ int main() {
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
+    int *Poly = NULL;
     X = new int[n];
     Y = new int[n];
     P = new int[n*n];
