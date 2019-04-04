@@ -15,6 +15,7 @@ __global__ void calculate_products(int *prods, int *x, int *y, size_t n)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     prods[index] = x[blockIdx.x] * y[threadIdx.x];
+    printf("%2d ", prods[index]);
 }
 
 
@@ -70,7 +71,7 @@ int main() {
 
 	calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
     cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
-    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", P[i]);
+
     // Sums to final polynomial
 
     int *Polyd;
