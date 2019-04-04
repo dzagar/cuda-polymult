@@ -35,14 +35,13 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     while (i >= 0 && j < n)
     {
         ans[blockIdx.x] += prods[i*n + j];
-        printf("%d ", ans[blockIdx.x]);
         i--;
         j++;
     }
 }
 
 int main() {
-    const int n = 64;    
+    const int n = 8;    
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
@@ -86,6 +85,11 @@ int main() {
     reduce_polynomial<<<2*n-2, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
+    // Print input, output
+    for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
+    printf("\n\n");
+    for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
+    printf("\n\n");
 	for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
 	printf("\n");
 	
