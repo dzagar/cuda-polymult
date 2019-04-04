@@ -17,7 +17,6 @@ __global__ void calculate_products(int *prods, int *x, int *y, size_t n)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     prods[index] = x[blockIdx.x] * y[threadIdx.x];
-    printf("%d ", prods[index]);
 }
 
 
@@ -36,6 +35,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     while (i >= 0 && j < n)
     {
         ans[blockIdx.x] += prods[i*n + j];
+        print("%d ", ans[blockIdx.x]);
         i--;
         j++;
     }
