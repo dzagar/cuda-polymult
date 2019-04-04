@@ -2,25 +2,23 @@
 
 using namespace std;
 
-const int MAX_DEGREE = 1024;
 const int MAX_COEFF = 103;
 
 void random_polynomial(int* p,  int n)
 {
-    srand(40);
     for (int i=0; i<n; i++) {
         p[i] = rand() % MAX_COEFF;
     }
 }
 
-__global__ void calculate_products(int *prods, int *x, int *y, size_t n) 
+__global__ void calculate_products(int *prods, int *x, int *y, int t, size_t n) 
 {
     int index = blockIdx.x * blockDim.x;
     for (int i = 0; i < t; i++)
     {
         for (int j = 0; j < t; j++)
         {
-            prods[index] = x[i] * y[j];
+            prods[index] += x[i] * y[j];
         }
     }
 }
@@ -46,7 +44,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
-    const int n = 128;
+    const int n = 1024;
     const int t = 64;    
     int *X = NULL;
     int *Y = NULL;
@@ -63,6 +61,10 @@ int main() {
     {
         P[i] = 0;
     }
+    for (int i = 0; i < 2*n-1; i++)
+    {
+        Poly[i] = 0;
+    }
 
     // Products
 	
@@ -75,26 +77,34 @@ int main() {
     cudaMemcpy(Yd, Y, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
-	calculate_products<<<t, (n**2)/t>>>(Pd, Xd, Yd, n);
-    cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
+	calculate_products<<<t, (n*n)/t>>>(Pd, Xd, Yd, t, n);
     
     // Sums to final polynomial
 
     int *Polyd;
     cudaMalloc((void **)&Polyd, sizeof(int)*2*n-1);
 
-    cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
     // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
-    reduce_polynomial<<<1, 2*n-2>>>(Pd, Polyd, prodsDim, n);
+    reduce_polynomial<<<2*n-2, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
-	for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
-	printf("\n");
+	    // Print input, output
+    for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
+    printf("\n\n");
+    for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
+    printf("\n\n");
+    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
+    printf("\n\n");
+    
+    delete [] X;
+    delete [] Y;
+    delete [] P;
+    delete [] Poly;
 	
-	cudaFree(Ad);
-    cudaFree(Bd);
+	cudaFree(Xd);
+    cudaFree(Yd);
     cudaFree(Pd);
     cudaFree(Polyd);
 	
