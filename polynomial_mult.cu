@@ -32,7 +32,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     {
         i = n-1, j = (blockIdx.x % n) + 1;
     }
-    while (i >= 0 && j < n)
+    while (i >= 0 && j <= n)
     {
         ans[blockIdx.x] += prods[i*n + j];
         i--;
