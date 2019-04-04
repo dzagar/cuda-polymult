@@ -2,12 +2,10 @@
 
 using namespace std;
 
-const int MAX_DEGREE = 1024;
 const int MAX_COEFF = 103;
 
 void random_polynomial(int* p,  int n)
 {
-    srand(40);
     for (int i=0; i<n; i++) {
         p[i] = rand() % MAX_COEFF;
     }
@@ -41,7 +39,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
-    const int n = 8;    
+    const int n = 2048;    
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
