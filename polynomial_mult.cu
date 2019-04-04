@@ -85,12 +85,12 @@ int main() {
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
     // Print input, output
-    // for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
-    // printf("\n\n");
-    // for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
-    // printf("\n\n");
-    // for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
-	// printf("\n\n");
+    for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
+    printf("\n\n");
+    for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
+    printf("\n\n");
+    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
+	printf("\n\n");
 	
 	cudaFree(Xd);
     cudaFree(Yd);
