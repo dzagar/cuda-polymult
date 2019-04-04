@@ -88,10 +88,10 @@ int main() {
     printf("\n\n");
     for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
     printf("\n\n");
-	for (int i = 0; i < n*n; ++i) printf("%2d ", P[i]);
-    printf("\n\n");
-    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
-	printf("\n\n");
+	// for (int i = 0; i < n*n; ++i) printf("%2d ", P[i]);
+    // printf("\n\n");
+    // for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
+	// printf("\n\n");
 	
 	cudaFree(Xd);
     cudaFree(Yd);
