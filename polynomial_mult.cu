@@ -39,7 +39,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
-    const int n = 2048;    
+    const int n = 1024; // 2^10
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
