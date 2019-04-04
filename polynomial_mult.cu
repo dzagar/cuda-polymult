@@ -70,7 +70,7 @@ int main() {
 
 	calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
     cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
-    
+    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", P[i]);
     // Sums to final polynomial
 
     int *Polyd;
@@ -84,11 +84,9 @@ int main() {
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
     // Print input, output
-    for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
-    printf("\n\n");
-    for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
-    printf("\n\n");
-	// for (int i = 0; i < n*n; ++i) printf("%2d ", P[i]);
+    // for (int i = 0; i < n; ++i) printf("%2d ", X[i]);
+    // printf("\n\n");
+    // for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
     // printf("\n\n");
     // for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
 	// printf("\n\n");
