@@ -10,6 +10,7 @@ void random_polynomial(int* p,  int n)
     srand(40);
     for (int i=0; i<n; i++) {
         p[i] = rand() % MAX_COEFF;
+        printf("%d ", p[i]);
     }
 }
 
