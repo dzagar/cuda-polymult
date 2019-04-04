@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <string>
 
 using namespace std;
 
@@ -58,6 +57,11 @@ int main() {
         P[i] = 0;
     }
 
+    for (int i = 0; i < 2*n-1; i++)
+    {
+        Poly[i] = 0;
+    }
+
     // Products
 	
 	int *Xd, *Yd, *Pd;
@@ -90,7 +94,13 @@ int main() {
     for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
     printf("\n\n");
     for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
-	printf("\n\n");
+    printf("\n\n");
+    
+    delete [] X;
+    delete [] Y;
+    delete [] P;
+    delete [] Poly;
+
 	
 	cudaFree(Xd);
     cudaFree(Yd);
