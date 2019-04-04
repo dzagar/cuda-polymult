@@ -1,8 +1,18 @@
 #include <cstdio>
+#include <string>
 
 using namespace std;
 
 const int MAX_COEFF = 103;
+
+struct cuda_exception {
+    explicit cuda_exception(const char *err) : error_info(err) {}
+    explicit cuda_exception(const string &err) : error_info(err) {}
+    string what() const throw() { return error_info; }
+
+    private:
+    string error_info;
+};
 
 void random_polynomial(int* p,  int n)
 {
