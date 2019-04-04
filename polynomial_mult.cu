@@ -32,7 +32,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     {
         i = n-1, j = (blockIdx.x % n) + 1;
     }
-    while (i >= 0 && j <= n)
+    while (i >= 0 && j < n)
     {
         ans[blockIdx.x] += prods[i*n + j];
         i--;
@@ -82,7 +82,7 @@ int main() {
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
     // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
-    reduce_polynomial<<<2*n-2, 1>>>(Pd, Polyd, n);
+    reduce_polynomial<<<2*n-1, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
     // Print input, output
