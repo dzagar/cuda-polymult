@@ -33,7 +33,6 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     while (i >= 0 && j < n)
     {
         ans[blockIdx.x] += prods[i*n + j];
-        printf("%2d ", ans[blockIdx.x]);
         i--;
         j++;
     }
@@ -89,8 +88,10 @@ int main() {
     printf("\n\n");
     for (int i = 0; i < n; ++i) printf("%2d ", Y[i]);
     printf("\n\n");
-	for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
-	printf("\n");
+	for (int i = 0; i < n*n; ++i) printf("%2d ", P[i]);
+    printf("\n\n");
+    for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
+	printf("\n\n");
 	
 	cudaFree(Xd);
     cudaFree(Yd);
