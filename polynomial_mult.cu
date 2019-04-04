@@ -11,11 +11,20 @@ void random_polynomial(int* p,  int n)
     }
 }
 
+void checkCudaError(const char *msg) {
+    cudaError_t err = cudaGetLastError();
+    if (cudaSuccess != err) {
+        string error_info(msg);
+        error_info += " : ";
+        error_info += cudaGetErrorString(err);
+        throw cuda_exception(error_info);
+    }
+}
+
 __global__ void calculate_products(int *prods, int *x, int *y, size_t n) 
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     prods[index] = x[blockIdx.x] * y[threadIdx.x];
-    printf("%2d ", prods[index]);
 }
 
 
@@ -61,15 +70,20 @@ int main() {
     // Products
 	
 	int *Xd, *Yd, *Pd;
-	cudaMalloc((void **)&Xd, sizeof(int)*n);
+    cudaMalloc((void **)&Xd, sizeof(int)*n);
+    checkCudaError("allocate GPU memory for the first matrix");
     cudaMalloc((void **)&Yd, sizeof(int)*n);
+    checkCudaError("allocate GPU memory for the second matrix");
     cudaMalloc((void **)&Pd, sizeof(int)*n*n);
+    checkCudaError("allocate GPU memory for the third matrix");
 
 	cudaMemcpy(Xd, X, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Yd, Y, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
-	calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
+    calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
+    cudaThreadSynchronize();
+    checkCudaError("call the multiplication kernel");
     cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
 
     // Sums to final polynomial
