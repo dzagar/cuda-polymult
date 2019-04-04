@@ -49,6 +49,7 @@ int main() {
     P = new int[n*n];
     Poly = new int[2*n-1];
 
+    // Initialize values
     random_polynomial(X, n);
     random_polynomial(Y, n);
 
@@ -63,7 +64,6 @@ int main() {
     }
 
     // Products
-	
 	int *Xd, *Yd, *Pd;
     cudaMalloc((void **)&Xd, sizeof(int)*n);
     cudaMalloc((void **)&Yd, sizeof(int)*n);
@@ -74,17 +74,13 @@ int main() {
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
     calculate_products<<<n, n>>>(Pd, Xd, Yd, n);
-    //cudaMemcpy(P, Pd, sizeof(int)*n*n, cudaMemcpyDeviceToHost);
-
-    // Sums to final polynomial
 
     int *Polyd;
     cudaMalloc((void **)&Polyd, sizeof(int)*2*n-1);
 
-    //cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
-    // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
+    // Reduction kernel
     reduce_polynomial<<<2*n-1, 1>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
