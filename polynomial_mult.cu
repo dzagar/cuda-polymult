@@ -17,7 +17,6 @@ __global__ void calculate_products(int *prods, int *x, int *y, size_t n)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     prods[index] = x[blockIdx.x] * y[threadIdx.x];
-    
 }
 
 
@@ -46,6 +45,7 @@ int main() {
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
+    int *Poly = NULL;
     X = new int[n];
     Y = new int[n];
     P = new int[n*n];
@@ -82,14 +82,14 @@ int main() {
     cudaMemcpy(Polyd, Poly, sizeof(int)*2*n-1, cudaMemcpyHostToDevice);
 
     // START REDUCTION KERNEL HERE AND JUST FOR-LOOP THRU THE BLOCK
-    reduce_polynomial<<<1, 2*n-2>>>(Pd, Polyd, prodsDim, n);
+    reduce_polynomial<<<1, 2*n-2>>>(Pd, Polyd, n);
     cudaMemcpy(Poly, Polyd, sizeof(int)*2*n-1, cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < 2*n-1; ++i) printf("%2d ", Poly[i]);
 	printf("\n");
 	
-	cudaFree(Ad);
-    cudaFree(Bd);
+	cudaFree(Xd);
+    cudaFree(Yd);
     cudaFree(Pd);
     cudaFree(Polyd);
 	
