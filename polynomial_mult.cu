@@ -14,7 +14,7 @@ void random_polynomial(int* p,  int n)
 __global__ void calculate_products(int *prods, int *x, int *y, size_t n) 
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
-    prods[index] = x[blockIdx.x] * y[threadIdx.x];
+    prods[index] = (x[blockIdx.x] * y[threadIdx.x]) % MAX_COEFF;
 }
 
 
@@ -32,7 +32,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     }
     while (i >= 0 && j < n)
     {
-        ans[blockIdx.x] += prods[i*n + j];
+        ans[blockIdx.x] = (ans[blockIdx.x] + prods[i*n + j]) % MAX_COEFF;
         i--;
         j++;
     }

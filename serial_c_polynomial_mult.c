@@ -17,7 +17,7 @@ void multiply_polynomials(int *x, int *y, int size, int *ans, int ansSize)
     {
         for (int j = 0; j < size; j++)
         {
-            ans[i+j] += x[i] * y[j];
+            ans[i+j] = (ans[i+j] + x[i] * y[j]) % MAX_COEFF;
         }
     }
 }
