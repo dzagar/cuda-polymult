@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <ctime>
 
 using namespace std;
 
@@ -40,6 +41,7 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
 }
 
 int main() {
+    srand(time(NULL));
     const int n = 4;
     const int t = 2;    
     int *X = NULL;
