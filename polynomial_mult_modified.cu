@@ -11,12 +11,12 @@ void random_polynomial(int* p,  int n)
     }
 }
 
-__global__ void calculate_products(int *prods, int *x, int *y, int t, size_t n) 
+__global__ void calculate_products(int *prods, int *x, int *y, size_t n) 
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int offset = blockIdx.x / n;
     // Shift y and start over with x.
-    prods[index] = (x[blockIdx.x % n] * y[threadIdx.x + blockDim.x*offset]) % MAX_COEFF;
+    prods[index] = (x[blockIdx.x % n] * y[threadIdx.x + blockDim.x*offset]);
 }
 
 __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
@@ -33,15 +33,15 @@ __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
     }
     while (i >= 0 && j < n)
     {
-        ans[blockIdx.x] = (ans[blockIdx.x] + prods[i*n + j]) % MAX_COEFF;
+        ans[blockIdx.x] = (ans[blockIdx.x] + prods[i*n + j]);
         i--;
         j++;
     }
 }
 
 int main() {
-    const int n = 1024;
-    const int t = 64;    
+    const int n = 4;
+    const int t = 2;    
     int *X = NULL;
     int *Y = NULL;
     int *P = NULL; // products
@@ -74,7 +74,7 @@ int main() {
     cudaMemcpy(Yd, Y, sizeof(int)*n, cudaMemcpyHostToDevice);
     cudaMemcpy(Pd, P, sizeof(int)*n*n, cudaMemcpyHostToDevice);
 
-	calculate_products<<<(n*n)/t, t>>>(Pd, Xd, Yd, t, n);
+	calculate_products<<<(n*n)/t, t>>>(Pd, Xd, Yd, n);
     
     // Sums to final polynomial
 
