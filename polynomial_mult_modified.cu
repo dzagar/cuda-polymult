@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cmath>
 
 using namespace std;
 
@@ -14,25 +15,9 @@ void random_polynomial(int* p,  int n)
 __global__ void calculate_products(int *prods, int *x, int *y, int t, size_t n) 
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
-    //__shared__ int s_prods[t];
-    if (blockIdx.x >= n)
-    {
-        // Shift y and start over with x.
-        prods[index] = (x[blockIdx.x % n] * y[threadIdx.x + t]) % MAX_COEFF;
-    }
-    else
-    {
-        // Take block index and thread index as is.
-        prods[index] = (x[blockIdx.x] * y[threadIdx.x]) % MAX_COEFF;
-    }
-    //__syncthreads();
-
-    // Sum products.
-    // int prodIndex = blockIdx.x*blockDim.x;
-    // for (int i = 0; i < t; i++)
-    // {
-    //     prods[prodIndex] += s_prods[i];
-    // }
+    int offset = floor(blockIdx.x / n);
+    // Shift y and start over with x.
+    prods[index] = (x[blockIdx.x % n] * y[threadIdx.x + blockDim.x*offset]) % MAX_COEFF;
 }
 
 __global__ void reduce_polynomial(int *prods, int *ans, size_t n)
