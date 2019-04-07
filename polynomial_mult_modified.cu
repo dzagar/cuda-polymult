@@ -13,8 +13,8 @@ void random_polynomial(int* p,  int n)
 
 __global__ void calculate_products(int *prods, int *x, int *y, size_t n) 
 {
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
     int offset = blockIdx.x / n;
+    int index = (blockIdx.x % n) * n + threadIdx.x + blockDim.x*offset;
     // Shift y and start over with x.
     prods[index] = (x[blockIdx.x % n] * y[threadIdx.x + blockDim.x*offset]);
 }
