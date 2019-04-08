@@ -89,7 +89,7 @@ int main() {
         return 0;
     }
 
-    int n = 2^exponent; // Number of terms.
+    int n = 1 << exponent; // Number of terms is 2^exponent.
     printf("%d terms; input polynomials are of degree %d.\n\n", n, n-1);
 
     int *X = NULL; // First polynomial of degree n-1.
