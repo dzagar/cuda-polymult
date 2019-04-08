@@ -141,13 +141,17 @@ int main() {
 
     // Print input, output.
     printf("CUDA Program Output\n\n");
+    printf("First input polynomial:\n");
     print_polynomial(X, n);
+    printf("Second input polynomial:\n");
     print_polynomial(Y, n);
+    printf("Result:\n");
     print_polynomial(Poly, 2*n-1);
 
     // Step 3: Verify using serial C function.
     printf("Verification with Serial C Output\n\n");
     multiply_polynomials_serial(X, Y, n, PolyV);
+    printf("Result:\n");
     print_polynomial(PolyV, 2*n-1);
     
     // Free memory.
